@@ -25,7 +25,7 @@ setMethod("fit",
 		method="EM"
 	    }
 	} else {
-	    if(method=="EM") {
+	    if(method=="EM"||method=="SGEM") {
 		if(constr) {
 		    warning("EM not applicable for constrained models; optimization method changed to 'rsolnp'")
 		    method="rsolnp"
@@ -33,12 +33,16 @@ setMethod("fit",
 	    }
 	}
 	
-	if(!(method %in% c("EM","donlp","rsolnp"))) stop("'method' argument invalid; should be one of 'EM', 'rsolnp', 'donlp'.")
+	if(!(method %in% c("EM","donlp","rsolnp","SGEM","VSSGEM","VSEM"))) stop("'method' argument invalid; should be one of 'EM', 'rsolnp', 'donlp'.")
 	
 	if(method=="EM") {
 	    object <- em(object,maxit=emcontrol$maxit,tol=emcontrol$tol,crit=emcontrol$crit,random.start=emcontrol$random.start,classification=emcontrol$classification,verbose=verbose,...)
 	}
 	
+	if(method=="SGEM")
+	{
+	  object <- sgem(object,epochs = emcontrol$epochs,batchsize = emcontrol$bsize,decay = emcontrol$decay, maxit=emcontrol$maxit,tol=emcontrol$tol,crit=emcontrol$crit,random.start=emcontrol$random.start,classification=emcontrol$classification,verbose=verbose,...)
+	}
 	if(method=="donlp"||method=="rsolnp") {
 	    
 	    # check feasibility of starting values

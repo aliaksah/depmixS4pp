@@ -98,6 +98,24 @@ emviterbi <- function(A,B,init,ntimes,nstates,homogeneous,na.allow=TRUE) {
     return(delta)
 }
 
+sgem<-function(object,...)
+{
+  
+  if(!is(object,"mix")) stop("object is not of class '(dep)mix'")
+  call <- match.call()
+
+  call[[1]] <- as.name("sgem.mix")
+
+  object <- eval(call, parent.frame())
+  object
+}
+
+sgem.mix <- function(object,epochs = 1, batchsize = 100, decay = 0, maxit=100,tol=1e-8,crit=c("relative","absolute"),random.start=TRUE,verbose=FALSE,classification=c("soft","hard"),na.allow=TRUE,...) {
+
+  
+  
+}
+
 
 em <- function(object,...) {
 	if(!is(object,"mix")) stop("object is not of class '(dep)mix'")
