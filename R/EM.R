@@ -238,7 +238,7 @@ em.mix <- function(object,maxit=100,tol=1e-8,crit=c("relative","absolute"),rando
 		
 		if(LL >= LL.old) {
 		  converge <- (crit == "absolute" &&  LL - LL.old < tol) || (crit == "relative" && (LL - LL.old)/abs(LL.old)  < tol)
-      if(converge) {
+      if(converge&verbose) {
 			  cat("converged at iteration",j,"with logLik:",LL,"\n")
 			  break
 			}
@@ -437,7 +437,7 @@ em.depmix <- function(object,maxit=100,tol=1e-8,crit=c("relative","absolute"),ra
 
 		if( (LL >= LL.old)) {
 		  converge <- (crit == "absolute" &&  LL - LL.old < tol) || (crit == "relative" && (LL - LL.old)/abs(LL.old)  < tol) 
-      if(converge) {
+      if(converge&verbose) {
 			  cat("converged at iteration",j,"with logLik:",LL,"\n")
         break
 			}

@@ -151,7 +151,7 @@ setMethod("fit","transInit",
 		  {
 		    xna = mean(w,na.rm = T)
 		    if(is.nan(xna))
-		      w[is.na(w)] <- 0
+		      w[is.na(w)] <- 1
 		    else
 		      w[is.na(w)] <- xna
 		  }
@@ -165,26 +165,51 @@ setMethod("fit","transInit",
     		Wts[-1,] <- pars$coefficients # set starting weights
     		Wts[Wts == Inf] <- .Machine$double.max.exp # Fix this!!!!
     		Wts[Wts == -Inf] <- .Machine$double.min.exp # Fix this!!!!!
-    		if(length(x)>0&length(y)>0){
-    		if(nrow(x)==nrow(y)){
+    		if(length(x)>0&length(y)>0&length(Wts)>0&length(mask)>0&length(pars)>0&length(nrow(x))>0&length(nrow(y))>0){
+    		#print("Hello")
+    		#print(nrow(x))
+    		if((nrow(x)==nrow(y))&nrow(x)>0){
+    		  #print(3)  
       		if(length(w)>0){
-        			if(NCOL(y) < 3) {
-        			  
-        				fit <- nnet.default(x,y,weights=w,size=0,entropy=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE)
-        			} else {
-        			
-        				fit <- nnet.default(x,y,weights=w,size=0,softmax=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE)
-        			}
+      		    
+      		  #print(4)  
+      		  w[is.na(w)] <- 1
+      		  #print(5)
+      			if(NCOL(y) < 3) {
+      			  
+      				fit <- nnet.default(x,y,weights=w,size=0,entropy=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE)
+      				#print(6)
+      			} else {
+      			
+      				fit <- nnet.default(x,y,weights=w,size=0,softmax=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE)
+      				#print(7)
+      			}
         		} else {
         			if(NCOL(y) < 3) {
         				fit <- nnet.default(x,y,size=0,entropy=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE)
+        				#print(8)
         			} else {
         				fit <- nnet.default(x,y,size=0,softmax=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE)
+        				#print(9)
         			}
         		}
-        		pars$coefficients <- t(matrix(fit$wts,ncol=ncol(pars$coefficients),nrow=nrow(pars$coefficients)+1)[-1,])
-        		if(length(object)<0&length(unlist(pars))>0)
-        		  object <- setpars(object,unlist(pars))
+    		    
+    		    if(length(fit)>0){
+        		  if(length(pars$coefficients)>0&length(fit$wts)>0)
+        		  {
+        		    #print(10)
+      		      pars$coefficients <- t(matrix(fit$wts,ncol=ncol(pars$coefficients),nrow=nrow(pars$coefficients)+1)[-1,])
+      		      #print(11)
+          		  if(length(object)>0&length(unlist(pars))>0&length(pars$coefficients)>0)
+          		  {
+          		   # print(12)
+          		    stp <- setpars(object,unlist(pars))
+          		    if(length(stp)>0)
+          		      object <- stp
+          		    #print(13)
+          		  }
+        		  }
+    		    }
     		}
     	}
   		},

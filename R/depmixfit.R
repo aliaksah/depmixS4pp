@@ -41,7 +41,7 @@ setMethod("fit",
 	
 	if(method=="SGEM")
 	{
-	  object <- sgem(object,epochs = emcontrol$epochs,batchsize = emcontrol$bsize,decay = emcontrol$decay, maxit=emcontrol$maxit,tol=emcontrol$tol,crit=emcontrol$crit,random.start=emcontrol$random.start,classification=emcontrol$classification,verbose=verbose,...)
+	  object <- sgem(object,epochs = emcontrol$epochs,batchsize = emcontrol$bsize,decay = emcontrol$decay, maxit=emcontrol$maxit,tol=emcontrol$tol,crit=emcontrol$crit,random.start=emcontrol$random.start,classification=emcontrol$classification,verbose=F,...)
 	}
 	if(method=="donlp"||method=="rsolnp") {
 	    
