@@ -26,6 +26,8 @@ setMethod("fit","NORMresponse",
 	  #y <- round(y) # delete me
 	  if(!is.null(w))
 	  {
+	    w[w == Inf] <- .Machine$double.max.exp
+	    w[w == -Inf] <- .Machine$double.min.exp
 	    xna = mean(w,na.rm = T)
 	    if(is.nan(xna))
 	      w[is.na(w)] <- 1
@@ -34,16 +36,19 @@ setMethod("fit","NORMresponse",
 	  }
 		pars <- object@parameters
 		
-		if(!is.null(w)) {
-			fit <- lm.wfit(x=x,y=y,w=w)
-		} else {
-			fit <- lm.fit(x=x,y=y)
-		}
-		pars$coefficients <- fit$coefficients
-		if(!is.null(w)) {
-			pars$sd <- sqrt(sum(w*fit$residuals^2/sum(w)))
-		} else {
-			pars$sd <- sd(fit$residuals)
+		if((sum(is.na(x))+sum(is.nan(x))+sum(is.infinite(x))+sum(is.na(y))+sum(is.nan(y))+sum(is.infinite(y)))==0&dim(x)[1]>0)
+		{
+  		if(!is.null(w)) {
+  			fit <- lm.wfit(x=x,y=y,w=w)
+  		} else {
+  			fit <- lm.fit(x=x,y=y)
+  		}
+  		pars$coefficients <- fit$coefficients
+  		if(!is.null(w)) {
+  			pars$sd <- sqrt(sum(w*fit$residuals^2/sum(w)))
+  		} else {
+  			pars$sd <- sd(fit$residuals)
+  		}
 		}
 		object <- setpars(object,unlist(pars))
 		object
