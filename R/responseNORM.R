@@ -13,40 +13,24 @@ setMethod("fit","NORMresponse",
 	  x[x == -Inf] <- .Machine$double.min.exp
 	  y[y == Inf] <- .Machine$double.max.exp
 	  y[y == -Inf] <- .Machine$double.min.exp
-	  if(is.matrix(y)) na <- unlist(apply(y,2,function(x) which(is.na(x)))) else na <- which(is.na(y))
-	  if(is.matrix(x)) na <- c(na,unlist(apply(x,2,function(x) which(is.na(x))))) else na <- c(na,which(is.na(x)))
-	  if(!is.null(w)) na <- c(na,which(is.na(w)))
-	  #y <- as.matrix(y)
-	  #x <- as.matrix(x)
-	  na <- unique(na)
-	  if(length(na)>0&length(na)<nrow(y)/1.2) {
-	    x <- x[-na,]
-	    y <- y[-na,]
-	    #y <- round(y) # delete me
-	    if(!is.null(w)) w <- w[-na]
-	  }
-	  else if(length(na)==nrow(y)&length(na)>0)
+	  xna = mean(x,na.rm = T)
+	  if(is.nan(xna))
+	    x[is.na(x)] <- 0
+	  else
+	    x[is.na(x)] <- xna
+	  xna = mean(y,na.rm = T)
+	  if(is.nan(xna))
+	    y[is.na(y)] <- 0
+	  else
+	    y[is.na(y)] <- xna
+	  #y <- round(y) # delete me
+	  if(!is.null(w))
 	  {
-	    
-	    xna = mean(x,na.rm = T)
+	    xna = mean(w,na.rm = T)
 	    if(is.nan(xna))
-	      x[is.na(x)] <- 0
+	      w[is.na(w)] <- 1
 	    else
-	      x[is.na(x)] <- xna
-	    xna = mean(y,na.rm = T)
-	    if(is.nan(xna))
-	      y[is.na(y)] <- 0
-	    else
-	      y[is.na(y)] <- xna
-	    #y <- round(y) # delete me
-	    if(!is.null(w))
-	    {
-	      xna = mean(w,na.rm = T)
-	      if(is.nan(xna))
-	        w[is.na(w)] <- 1
-	      else
-	        w[is.na(w)] <- xna
-	    }
+	      w[is.na(w)] <- xna
 	  }
 		pars <- object@parameters
 		

@@ -110,10 +110,41 @@ sgem<-function(object,...)
   object
 }
 
-sgem.mix <- function(object,epochs = 1, batchsize = 100, decay = 0, maxit=100,tol=1e-8,crit=c("relative","absolute"),random.start=TRUE,verbose=FALSE,classification=c("soft","hard"),na.allow=TRUE,...) {
+sgem.mix <- function(object,epochs = 1, nbatches = 100, data, fm = NULL, decay = 0, maxit=100,tol=1e-8,crit=c("relative","absolute"),random.start=TRUE,verbose=FALSE,classification=c("soft","hard"),na.allow=TRUE,...)
+  {
 
-  
-  
+  for(epochs in 1:epochs)
+    for(bid in 1:nbatches)
+    {
+      object@data=train[((bid-1)*as.integer(dim(train)[1]/nbatches)+1):((bid)*as.integer(dim(train)[1]/nbatches)),]
+      if(length(fm)>0)
+      { 
+        pars = getpars(fm)
+        pars[is.na(pars)] = 0.00001
+        pars[is.nan(pars)] = 0.00001
+        #print(as.array(pars))
+        mod = setpars(object,as.array(pars))
+        #tryCatch({
+        fm= NULL
+        fm = depmixS4::fit(verbose = F,mod,method = "EM",emcontrol = em.control(maxit = 5,random.start = F,classification = "soft", crit= "absolute" ))
+        print(logLik(fm))
+        if(is.null(fm)||logLik(fm)==-10^(5)){
+          gc()
+          fm = depmixS4::fit(verbose = F,mod,method = "EM",emcontrol = em.control(maxit = 50,random.start = T,classification = "soft", crit= "absolute"))
+        }
+      }else{
+        #tryCatch({
+        fm= NULL
+        fm = depmixS4::fit(verbose = F,mod,emcontrol = em.control(maxit = 50,random.start = T,classification = "soft", crit= "absolute" ))
+        if(is.null(fm)){
+          gc()
+          fm =depmixS4::fit(verbose = F,mod,emcontrol = em.control(maxit = 50,random.start = T,classification = "soft", crit= "absolute" ))
+        }
+      
+      }
+      
+    }
+  return(fm)
 }
 
 
