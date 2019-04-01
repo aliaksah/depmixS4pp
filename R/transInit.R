@@ -122,13 +122,17 @@ setMethod("fit","transInit",
 		#y <- object@y[,-base]
 		y <- object@y
 		x <- object@x
+		x[x == Inf] <- .Machine$double.max.exp
+		x[x == -Inf] <- .Machine$double.min.exp
+		y[y == Inf] <- .Machine$double.max.exp
+		y[y == -Inf] <- .Machine$double.min.exp
 		if(is.matrix(y)) na <- unlist(apply(y,2,function(x) which(is.na(x)))) else na <- which(is.na(y))
 		if(is.matrix(x)) na <- c(na,unlist(apply(x,2,function(x) which(is.na(x))))) else na <- c(na,which(is.na(x)))
 		if(!is.null(w)) na <- c(na,which(is.na(w)))
 		y <- as.matrix(y)
 		x <- as.matrix(x)
 		na <- unique(na)
-		if(length(na)>0&length(na)<nrow(y)) {
+		if(length(na)>0&length(na)<nrow(y)/1.2) {
 			x <- x[-na,]
 			y <- y[-na,]
 			#y <- round(y) # delete me
@@ -136,6 +140,7 @@ setMethod("fit","transInit",
 		}
 		else if(length(na)==nrow(y)&length(na)>0)
 		{
+		  
 		  xna = mean(x,na.rm = T)
 		  if(is.nan(xna))
 		    x[is.na(x)] <- 0
@@ -174,6 +179,16 @@ setMethod("fit","transInit",
       		    
       		  #print(4)  
       		  w[is.na(w)] <- 1
+      		  w[is.nan(w)] <- 1
+      		  w[is.infinite(w)] <- 1
+      		  x[is.na(x)] <- 0
+      		  x[is.nan(x)] <- 0
+      		  x[x == Inf] <- .Machine$double.max.exp
+      		  x[x == -Inf] <- .Machine$double.min.exp
+      		  y[is.na(y)] <- 0
+      		  y[is.nan(y)] <- 0
+      		  y[y == Inf] <- .Machine$double.max.exp
+      		  y[y == -Inf] <- .Machine$double.min.exp
       		  #print(5)
       			if(NCOL(y) < 3) {
       			  
