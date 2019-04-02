@@ -4,7 +4,7 @@
 # FORWARD-BACKWARD algoritme, 23-3-2008
 # 
 
-fb <- function(init,A,B,ntimes=NULL,return.all=FALSE,homogeneous=TRUE,useC=FALSE,na.allow=TRUE) {
+fb <- function(init,A,B,ntimes=NULL,return.all=FALSE,homogeneous=TRUE,useC=T,na.allow=TRUE) {
 
 	# Forward-Backward algorithm (used in Baum-Welch)
 	# Returns alpha, beta, and full data likelihood
