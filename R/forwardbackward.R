@@ -5,14 +5,14 @@
 # 
 
 setMethod("forwardbackward","depmix",
-	function(object, return.all=TRUE, useC=T, ...) {
+	function(object, return.all=TRUE, useC=F, ...) {
 		fb(init=object@init,A=object@trDens,B=object@dens,ntimes=ntimes(object), 
 			homogeneous=object@homogeneous,return.all=return.all,useC=useC)
 	}
 )
 
 setMethod("forwardbackward","mix",
-	function(object, return.all=TRUE, useC=T, ...) {
+	function(object, return.all=TRUE, useC=F, ...) {
 		fb(init=object@init,matrix(0,1,1),B=object@dens,ntimes=ntimes(object), 
 			homogeneous=TRUE,return.all=return.all,useC=useC)
 	}
