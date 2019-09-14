@@ -33,19 +33,41 @@ for(i in 1:M)
 }
 results = mclapply(FUN = function(x) do.call(simulated_annealing_binomial,x),X = params)
 
-fileConn=file("/mn/anatu/ansatte-u3/aliaksah/Desktop/Untitled Folder/output1.csv")
-for(i in 2:M)
+best = 2
+for(i in 1:M)
 {
-  write(opt[i],file=fileConn,append=TRUE)
+  if(length(results[[i]])>1)
+    if(BIC(results[[i]]$model)<BIC(results[[best]]$model))
+      best = i 
 }
-#writeLines(opt, fileConn)
-close(fileConn)
+
+results[[best]]$model
+
+posts = depmixS4::posterior(results[[best]]$model)
+
+png(file=paste("classifyhmm.png",sep = ""),width     = 10,
+    height    = 5,
+    units     = "in",
+    res       = 500)
+plot(data.example2$total_bases, col = 4, pch = 16,ylim = c(-13,30),xlab = "",ylab = "Data and methylation probabilities",xaxt = "n",yaxt = "n")
+axis(1, at=seq(1,length(data.example2$pos), by = 50), labels=data.example2$pos[seq(1,length(data.example2$pos), by = 50)],las=2)
+axis(2, at=c(seq(0,max(data.example2$total_bases)+5,5)), labels = c(seq(0,max(data.example2$total_bases)+5,5)))
+axis(2, at=c(-13,-3), labels = c(0,1), las = 2)
+points(data.example2$methylated_bases,col=2, pch = 15)
+#lines(rep(2.6,length(data.example2$total_bases)),col=3,lwd=4,lty = 1)
+lines(rep(- 2.1,length(data.example2$total_bases)))
+#points(testtot,col=3, pch = 17)
+#points(testmeth,col=7, pch = 17)
+lines(10*data.example2$methylated_bases/data.example2$total_bases-13,col = 5,lwd=2)
+#lines(10*res1[1,] - 11,col=8)
+lines(10*(posts$S2)-13,lwd=2,col = "green")
+lines(10*(posts$state-1)-13,lwd=2,col = "sienna4")
+#lines(10*g(fm5$summary.random[[2]]$mode)-13,lwd=4,col = 1)
+#lines(10*g(fm4$summary.random[[1]]$mean)-13,col =6,lwd=2)
+dev.off()
+
 
 #system("shutdown -h now")
-
-
-simulated_annealing(fparam = fparam,isobsbinary = c(0,0,1,1,1,1,1,1,1,1,1,1),fobserved = fobserved,ranges = 1,ns = ns,initpr = c(0,1),data = X[X$chrom == 1,][2:1000,1:18],a.prior.em = 50, b.prior.em = 15, a.post.em = 10,wcrit = 1,a.Q.prior = 5, b.Q.prior = 15, X.min = 3, X.max = 10,mu.prior.maxit = 25 ,s2.prior.maxit = 2 ,s2.post.maxit = 3 ,col.rate.maxit = 0.99,tmin = 0.0005,temp = 200000,dt = 3 ,p_id = 1,seed = runif(1,1,1000))
-## simulated annealing optimization with limited EM greedy improvements
 simulated_annealing_binomial=function(epochs = 3, estat = 3, fparam,isobsbinary, MIC = stats::BIC,SIC =stats::AIC, fobserved, ranges, ns,initpr, data,a.prior.em, b.prior.em, a.post.em, wcrit, a.Q.prior, b.Q.prior, X.min, X.max,
                                       a.maxit.prior=20,b.maxit.prior=0.1, prior.inclusion =array(1,dim = c(length(c(0,0,1,1,1,1,1,1,1,1,1,1)),2)), s2.post.maxit,col.rate.maxit,tmin,temp,dt,p_id,seed){
   # initialize the set of parameters
