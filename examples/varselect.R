@@ -2,6 +2,12 @@ library("depmixS4")
 library(RCurl)
 library(parallel)
 
+
+install.packages("https://github.com/aliaksah/depmixS4pp/blob/master/depmixS4_1.3-5.tar.gz?raw=true", repos = NULL, type="source")
+library(depmixS4)
+
+predict_depmix
+
 rm(list = ls(all = TRUE))
 
 
