@@ -21,7 +21,6 @@ export(
 	multinomial,
 	em,
 	predict_depmix,
-	predict_depmix_mode,
 	em.control,
 	viterbi,
 	mlogit,

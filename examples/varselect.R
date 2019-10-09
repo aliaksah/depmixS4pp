@@ -7,6 +7,8 @@ install.packages("https://github.com/aliaksah/depmixS4pp/blob/master/depmixS4_1.
 library(depmixS4)
 
 predict_depmix
+depmixS4::viterbi()
+
 
 rm(list = ls(all = TRUE))
 
