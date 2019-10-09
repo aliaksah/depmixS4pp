@@ -345,7 +345,11 @@ summary(results[[best]]$model)
 depmixS4::getpars(results[[best]]$model)
 
 prc = 261.950*exp(cumsum(X$AMZN))
-
+vstates  =2-(depmixS4::posterior(hmm.vanilla$fm)$state-1)
+id0 = which(vstates==0)
+id1 = which(vstates==2)
+vstates[id0]=2
+vstates[id1]=0
 png(file=paste("fitFIN.png",sep = ""),width     = 10,
     height    = 10,
     units     = "in",
@@ -363,6 +367,7 @@ lines(rep(-240,length(X$AMZN)))
 #points(testmeth,col=7, pch = 17)
 #lines(10*res1[1,] - 11,col=8)
 #lines(230*(posts$S1)-500,lwd=3,col = "sienna4")
+lines(115*(vstates)-500,lwd=2,col = "brown")
 lines(115*((posts$state-1))-500,lwd=2,col = "green")
 #lines(10*g(fm5$summary.random[[2]]$mode)-13,lwd=4,col = 1)
 #lines(10*g(fm4$summary.random[[1]]$mean)-13,col =6,lwd=2)
@@ -382,13 +387,11 @@ predict_depmix= function(test,infer)
   modNew = setpars(modNew,getpars(infer$fm))
   fb = forwardbackward(modNew)[["alpha"]]
   predStates  = unlist(lapply(X=array(1:(dim(test)[1])),FUN = function(x){which.max(fb[x,])}))
-  #predStates = rep(3,(dim(test)[1]))
   if(length(predStates)==0)
     predStates = rep(1,(dim(test)[1]))
   dres = summary(modNew)
   dres[is.na(dres)] = 0
   preds = unlist(lapply(1:length(predStates), function(i){sum(unlist(c(1,test[i,-1]))*dres[predStates[i],1:dim(dres)[2]-1])}))
-  #preds[preds<=0]=mean(preds[preds>0])
   y.hat = preds
   return(list(y= y.hat,s =predStates))
 }
@@ -424,6 +427,29 @@ if(shares>0)
   money = shares*prc[i]
 
 
+money = 1000
+shares =0
+vstates = vstates + 1
+for(i in 1:length(prc))
+{
+  s = vstates[i]
+  print(s)
+  if(s==2&money>0)
+  {  
+    shares = money/prc[i]
+    money = 0
+  }
+  
+  if(s==3&shares>0)
+  {
+    money = shares*prc[i]
+    shares = 0
+  }
+}
+if(shares>0)
+  money = shares*prc[i]
+
+
 prc = 753.67*exp(cumsum(X.test$AMZN))
 prc.pred = 753.67*exp(cumsum(y.pred$y))
 
@@ -432,6 +458,34 @@ shares =0
 for(i in 1:length(y.pred$s))
 {
   s = y.pred$s[i]
+  print(s)
+  if(s==2&money>0)
+  {  
+    shares = money/prc.pred[i]
+    money = 0
+  }
+  
+  if(s==3&shares>0)
+  {
+    money = shares*prc.pred[i]
+    shares = 0
+  }
+}
+if(shares>0)
+  money = shares*prc.pred[i]
+
+
+vstates.pred = y.pred.vanilla$s
+vstates.pred   =2-(vstates.pred  - 1)
+id0 = which(vstates.pred ==0)
+id1 = which(vstates.pred ==1)
+vstates.pred[id0]=1
+vstates.pred[id1]=0
+money = 1000
+shares =0
+for(i in 1:length(y.pred$s))
+{
+  s = vstates.pred[i] + 1
   print(s)
   if(s==2&money>0)
   {  
@@ -506,10 +560,101 @@ prc.ar = 753.67*exp(cumsum(pred.ar))
 prc.lasso = 753.67*exp(cumsum(pred.lasso))
 prc.ridge = 753.67*exp(cumsum(pred.ridge))
 
+library(CausalImpact)
+
+fit_causalimp = function(vect)
+{
+  train = as.matrix(vect$data.example)
+  #colnames(train) = paste0("V",1:(length(colnames(train))))
+  #colnames(train)[1] = "y"
+  fm = CausalImpact(train , vect$trind, vect$teind, model.args = list(niter = 1000, nseasons = 1,standardize.data = F))
+  coef = plot(fm$model$bsts.model, "coefficients")
+  vars = array(0,length(coef$permutation))
+  vars[coef$permutation]=(coef$inclusion.prob>0.5)
+  return(list(vars = vars[-1],preds = as.vector(fm$series$point.pred[vect$teind[1]:vect$teind[2]])))
+}
+predict_causalimp = function(infer,x.new)
+{
+  return(infer$preds)
+}
+
+vect = list(data.example = rbind(X,X.test)[,-1], trind =c(1,982),teind = c(983,(983+275)))
+infer.cimpa = fit_causalimp(vect)
+infer.cimpa$preds
+prc.cimpa = 753.67*exp(cumsum(infer.cimpa$preds))
+
+
+library(prophet)
+df = X[,c(1,2)]
+names(df) = c('ds','y' )
+m = prophet(df)
+future = make_future_dataframe(m, periods = 276)
+future$y = c(X$AMZN,X.test$AMZN)
+tail(future)
+forecast.prophet = predict(m, future)$yhat[1:276]
+prc.proph = 753.67*exp(cumsum(forecast.prophet))
+
+fit_depmix=function(vect)
+{
+  train = vect
+  #colnames(train) = paste0("V",1:length(colnames(train)))
+  #train =  exp(cumsum(train))
+  
+  fla = as.formula(paste(colnames(train)[1],"~ 1 +",paste0(colnames(train)[-1],collapse = "+")))
+  trs= as.formula(paste("~ 1 +",paste0(colnames(train)[-1],collapse = "+")))
+  ns = 3
+  
+  mod = depmix(response = fla,data=train,transition =trs, nstates=ns,
+               family=gaussian())
+  fm=fit(mod,emcontrol = em.control(maxit = 200,random.start = TRUE))
+  return(list(fm = fm, fla=fla, trs = trs,ns=ns))
+  
+}
+
+hmm.vanilla = fit_depmix(X[,-1])
+y.pred.vanilla = predict_depmix(X.test,infer =hmm.vanilla )
+prc.vanil = 753.67*exp(cumsum(y.pred.vanilla$y))
+
+
 mse.ar.pr = sqrt(mean((prc.ar-prc)^2))
 mse.lasso.pr = sqrt(mean((prc.lasso-prc)^2))
 mse.ridge.pr = sqrt(mean((prc.ridge-prc)^2))
 mse.hmm.pr = sqrt(mean((prc.pred-prc)^2))
+mse.cimpa.pr = sqrt(mean((prc.cimpa-prc)^2))
+mse.prop.pr = sqrt(mean((prc.proph-prc)^2))
+mse.vanilla.pr = sqrt(mean((prc.vanil-prc)^2))
+
+forecast::dm.test((prc.ar-prc),(prc.pred-prc),h=1,alternative = "greater")
+forecast::dm.test((prc.lasso-prc),(prc.pred-prc),h=1,alternative = "greater")
+forecast::dm.test((prc.ridge-prc),(prc.pred-prc),h=1,alternative = "greater")
+forecast::dm.test((prc.cimpa-prc),(prc.pred-prc),h=1,alternative = "greater")
+forecast::dm.test((prc.proph-prc),(prc.pred-prc),h=1,alternative = "greater")
+forecast::dm.test((prc.vanil-prc),(prc.pred-prc),h=1,alternative = "greater")
+
+sd.ar.pr = sd((prc.pred-prc)^2-(prc.ar-prc)^2)
+sd.lasso.pr = (sd((prc.pred-prc)^2-(prc.lasso-prc)^2))
+sd.ridge.pr = (sd((prc.pred-prc)^2-(prc.ridge-prc)^2))
+sd.hmm.pr = (sd((prc.pred-prc)^2-(prc.pred-prc)^2))
+
+
+mn.ar.pr = mean((prc.pred-prc)^2-(prc.ar-prc)^2)
+mn.lasso.pr = (mean((prc.pred-prc)^2-(prc.lasso-prc)^2))
+mn.ridge.pr = (mean((prc.pred-prc)^2-(prc.ridge-prc)^2))
+mn.hmm.pr = (mean((prc.pred-prc)^2-(prc.pred-prc)^2))
+
+t.ar = mn.ar.pr/(sd.ar.pr/sqrt(length(prc)))
+t.las = mn.ar.pr/(sd.lasso.pr/sqrt(length(prc)))
+t.rid = mn.ar.pr/(sd.ridge.pr/sqrt(length(prc)))
+
+pnorm(q = t.ar)
+pnorm(q = t.las)
+pnorm(q = t.rid)
+
+pnorm(q = 0)
+
+print(paste(mse.hmm.pr,mse.lasso.pr,mse.ridge.pr,mse.ar.pr))
+
+
 
 coint = function(phat,p)
 {
@@ -525,25 +670,34 @@ coint(prc,prc.pred)
 coint(prc,prc.lasso)
 coint(prc,prc.ridge)
 coint(prc,prc.ar)
+coint(prc,prc.cimpa)
+coint(prc,prc.proph)
+coint(prc,prc.vanil)
 
 png(file=paste("testFIN.png",sep = ""),width     = 10,
     height    = 10,
     units     = "in",
     res       = 500)
-plot(prc, col = 4, pch = 16,ylim = c(-100,1400),xlab = "",ylab = "AMZN price and log returns",xaxt = "n",yaxt = "n")
-points(prc.ar,pch = 2,col=5)
-points(prc.lasso,pch = 3,col=17)
-points(prc.ridge,pch = 4,col=14)
-points(prc.pred,pch = 5,col=8)
+plot(prc, col = 4, pch = 16,ylim = c(-100,1550),xlab = "",ylab = "AMZN price and log returns",xaxt = "n",yaxt = "n")
+points(prc.ar+100,pch = 2,col=5)
+points(prc.lasso+100,pch = 3,col=17)
+points(prc.ridge+100,pch = 4,col=14)
+points(prc.cimpa+100,pch = 6,col=8)
+points(prc.proph+100,pch = 7,col="pink")
+points(prc.vanil+100,pch = 8,col ="yellow")
+points(prc.pred+100,pch = 5,col="green")
 axis(1, at=seq(1,length(X.test$AMZN), by = 50), labels=X.test$date[seq(1,length(X.test$date), by = 50)],las=2)
-axis(2, at=c(seq(round(min(prc))+80,round(max(prc)+5),50)), labels = c(seq(round(min(prc))+80,round(max(prc))+5,50)))
+axis(2, at=c(seq(round(min(prc))+80,round(max(prc)+105),52)), labels = c(seq(round(min(prc))-20,round(max(prc))+5,52)))
 axis(2, at=c(-100,15,130), labels = c(0,1,2), las = 1)
 axis(2, at=c(290,500,710), labels = c(-0.12,0,0.12), las = 2)
 lines(rep(760,length(X.test$AMZN)))
 points(1700*array(pred.ar)+500,pch = 2,col =5)
 points(1700*array(pred.lasso)+500,pch = 3,col =17)
 points(1700*array(pred.ridge)+500,pch = 4,col =14)
-points(1700*y.pred$y+500,pch = 5,col =8)
+points(1700*infer.cimpa$preds+500,pch = 6,col=8)
+points(1700*forecast.prophet+500,pch = 7,col="pink")
+points(1700*y.pred.vanilla$y+500,pch = 8,col ="yellow")
+points(1700*y.pred$y+500,pch = 5,col ="green")
 points(1700*X.test$AMZN+500,col=2, pch = 1)
 lines(rep(240,length(X.test$AMZN)))
 #lines(rep(2.6,length(data.example2$total_bases)),col=3,lwd=4,lty = 1)
@@ -551,6 +705,7 @@ lines(rep(240,length(X.test$AMZN)))
 #points(testmeth,col=7, pch = 17)
 #lines(10*res1[1,] - 11,col=8)
 #lines(230*(posts$S1)-500,lwd=3,col = "sienna4")
+lines(115*((vstates.pred))-100,lwd=2,col = "yellow")
 lines(115*((y.pred$s-1))-100,lwd=2,col = "green")
 #lines(10*g(fm5$summary.random[[2]]$mode)-13,lwd=4,col = 1)
 #lines(10*g(fm4$summary.random[[1]]$mean)-13,col =6,lwd=2)
