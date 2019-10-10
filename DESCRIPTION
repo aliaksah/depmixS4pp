@@ -1,4 +1,4 @@
-Package: depmixS4pp
+Package: depmixS4
 Version: 1.0
 Date: 2019-10-09 (R666)
 Title: Model Selection in Dependent Mixture Models - Hidden Markov Models of GLMs and
