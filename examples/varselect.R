@@ -3,7 +3,7 @@ library(RCurl)
 library(parallel)
 
 
-install.packages("https://github.com/aliaksah/depmixS4pp/blob/master/depmixS4_1.3-5.tar.gz?raw=true", repos = NULL, type="source")
+install.packages("https://github.com/aliaksah/depmixS4pp/blob/master/depmixS4_1.0.tar.gz?raw=true", repos = NULL, type="source")
 library(depmixS4)
 
 predict_depmix
@@ -287,7 +287,7 @@ for(i in 1:M)
     params[[i]]=list(fparam = fparam,isobsbinary = c(0,0,rep(1,length(fparam))),prior.inclusion = array(1,c(length(fparam),2)),fobserved = fobserved,ranges = 1,ns = ns,initpr = c(0,1),data = data.example2,a.prior.em = runif(n = 1,min = 100,max = 200), b.prior.em = runif(n = 1,min = 1,max = 10), a.post.em = 10,wcrit = 1,a.Q.prior = 5, b.Q.prior = 15, X.min = 3, X.max = 10,a.maxit.prior  = runif(n = 1,min = 15, max = 35) ,b.maxit.prior  = 2 ,s2.post.maxit = 3 ,col.rate.maxit = runif(n=1,min = 0.97, max = 0.99),tmin = runif(n = 1,min = 0.0000005, max = 0.05),temp = runif(n = 1,min = 20000,max = 2000000000),dt = runif(n = 1,min = 2, max = 6) ,p_id = 1,seed = runif(1,1,1000))
   }),abort = function(){onerr=TRUE})
 }
-results = mclapply(FUN = function(x) do.call(simulated_annealing_binomial,x),X = params)
+results = mclapply(FUN = function(x) do.call(simulated_annealing_binomial,x),X = params,mc.cores = 24)
 
 res.aic = NULL
 res.bic = NULL
@@ -300,6 +300,7 @@ for(i in 1:M)
     res.bic = c(res.bic,BIC(results[[best]]$model))
     if(BIC(results[[i]]$model)<BIC(results[[best]]$model))
       best = i 
+    print(BIC(results[[best]]$model))
   }
 }
 
@@ -319,6 +320,9 @@ results[[best]]$model
 write.table(depmixS4::getpars(results[[best]]$model),"bestmodel1")
 
 depmixS4::getmodel(results[[best]]$model)
+
+
+summary(results[[best]]$model)
 
 posts = depmixS4::posterior(results[[best]]$model)
 
