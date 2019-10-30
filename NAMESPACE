@@ -21,6 +21,8 @@ export(
 	multinomial,
 	em,
 	predict_depmix,
+	select_depmix,
+	simulated_annealing,
 	em.control,
 	viterbi,
 	mlogit,
@@ -68,4 +70,4 @@ exportMethods(
 	getmodel
 )
 
-useDynLib(depmixS4, .registration = TRUE)
+useDynLib(depmixS4pp, .registration = TRUE)

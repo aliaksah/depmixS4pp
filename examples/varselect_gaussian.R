@@ -248,7 +248,7 @@ simulated_annealing_gaussian=function(epochs = 3, estat = 3, fparam,isobsbinary,
   return(list(model=glmod, vars.obs=varglob.obs,vars.trs=varglob.trs , time=(tt)))
 }
 
-sp500data = read.table("file:///nr/samba/user/ahu/depmixS4/data/all_stocks_5yr.csv",sep = ",",header = T)
+sp500data = read.table("file:///nr/samba/user/ahu/depmixS4pp/data/all_stocks_5yr.csv",sep = ",",header = T)
 
 name1 = "AMZN"
 tmp = sp500data[which(sp500data$Name==name1),c(1,5)]
@@ -398,6 +398,9 @@ predict_depmix= function(test,infer)
 
 y.pred = predict_depmix(X.test,infer = infer)
 
+y.pred = depmixS4::predict_depmix(object = infer$fm,test = X.test,mode = T)
+
+sum(y.pred$y-y.pred1$y)
 
 
 plot(y.pred$y, col = 2)
@@ -613,6 +616,9 @@ fit_depmix=function(vect)
 
 hmm.vanilla = fit_depmix(X[,-1])
 y.pred.vanilla = predict_depmix(X.test,infer =hmm.vanilla )
+y.pred.vanilla = depmixS4::predict_depmix(X.test,object = hmm.vanilla$fm, mode = T)
+
+
 prc.vanil = 753.67*exp(cumsum(y.pred.vanilla$y))
 
 

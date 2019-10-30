@@ -1,16 +1,9 @@
-library("depmixS4")
+library(depmixS4pp)
 library(RCurl)
 library(parallel)
 
 
 install.packages("https://github.com/aliaksah/depmixS4pp/blob/master/depmixS4_1.0.tar.gz?raw=true", repos = NULL, type="source")
-library(depmixS4)
-
-predict_depmix
-depmixS4::viterbi()
-
-
-rm(list = ls(all = TRUE))
 
 
 

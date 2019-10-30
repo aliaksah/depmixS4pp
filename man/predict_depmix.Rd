@@ -14,7 +14,7 @@
 
 \usage{
 
-	\S4method{fit}{mix}(object, test, mode)
+	predict_depmix(object, test, mode)
 
 }
 

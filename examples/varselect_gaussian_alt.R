@@ -408,6 +408,7 @@ predict_depmix= function(test,infer)
 
 y.pred = predict_depmix(X.test,infer = infer)
 
+y.pred = depmixS4::predict_depmix(object = infer$fm,test = X.test,mode = T)
 
 
 plot(y.pred$y, col = 2)
@@ -580,7 +581,9 @@ fit_depmix=function(vect)
 }
 
 hmm.vanilla = fit_depmix(X[,-1])
-y.pred.vanilla = predict_depmix(X.test,infer =hmm.vanilla )
+y.pred.vanilla = depmixS4::predict_depmix(test = X.test,object =hmm.vanilla$fm, mode = T)
+
+
 prc.vanil = sp*exp(cumsum(y.pred.vanilla$y))
 
 
