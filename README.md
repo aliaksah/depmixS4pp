@@ -19,7 +19,7 @@ NHHMM are a subclass of dependent mixture models used for semi-supervised learni
 ```R 
 install.packages("https://github.com/aliaksah/depmixS4pp/blob/master/depmixS4pp_1.0_R_x86_64-pc-linux-gnu.tar.gz?raw=true", repos = NULL, type="source")
 ```
-* An expert parallel call of ASA-EM (see [select_depmix](https://rdrr.io/github/aliaksah/depmixS4pp/man/select_depmix.html)): 
+* An expert parallel call of parallel ASA-EM (see [select_depmix](https://rdrr.io/github/aliaksah/depmixS4pp/man/select_depmix.html)): 
 ```R 
 results = depmixS4pp::select_depmix(epochs =3,estat = 3,data = X,MIC = stats::AIC,SIC =stats::BIC,family = gaussian(),fparam = fparam,fobserved = fobserved,isobsbinary = c(0,0,rep(1,length(fparam))),prior.inclusion = array(1,c(length(fparam),2)),ranges = 1,ns = ns,initpr =  c(0,1,0),seeds = runif(M,1,1000),cores = M)
 ```
