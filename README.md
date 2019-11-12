@@ -80,7 +80,7 @@ points(y.pred$y, col = 2)
 axis(1, at=seq(1,length(X.test$AAPL), by = 50), labels=X.test$date[seq(1,length(X.test$date), by = 50)],las=2)
 ```
 <p align="center">
-<img src="https://raw.githubusercontent.com/aliaksah/depmixS4pp/master/examples/results/logreturns.png" width="1000" height="600">
+<img src="https://raw.githubusercontent.com/aliaksah/depmixS4pp/master/examples/results/logreturns.png" width="800" height="550">
 </p>
 Finally we can plot the price predictions. To do that we first trasform the actual and predicted log-returns via:
 
@@ -97,7 +97,7 @@ lines(prc.pred, col = "blue")
 axis(1, at=seq(1,length(X.test$AAPL), by = 50), labels=X.test$date[seq(1,length(X.test$date), by = 50)],las=2)
 ```
 <p align="center">
-<img src="https://raw.githubusercontent.com/aliaksah/depmixS4pp/master/examples/results/prices.png" width="1000" height="600">
+<img src="https://raw.githubusercontent.com/aliaksah/depmixS4pp/master/examples/results/prices.png" width="800" height="550">
 </p>
 Here, we have the RMSE of **10.816** obtained via:
 
