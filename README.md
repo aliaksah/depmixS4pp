@@ -86,7 +86,7 @@ Finally we can plot the price predictions. To do that we first trasform the actu
 ```R 
 prc = sp*exp(cumsum(X.test$AAPL))
 prc.pred = sp*exp(cumsum(y.pred$y))
-```
+``` 
 
 And plot the predictions for the price (blue) and actual test price (brown) via:
 
