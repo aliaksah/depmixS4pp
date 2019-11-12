@@ -49,10 +49,9 @@ fparam = c("ADI", "AMAT", "AMP", "AOS", "APH", "AVGO", "BLK", "BRK.B", "CSCO", "
 ```
 and the observations as
 
+
 ```R 
-```
 fobserved = "AAPL"
-```R 
 ```
 We will run the ASA-EM with gaussian observations with 3 latent states on 30 cores. Specify:
 
@@ -66,7 +65,11 @@ And run the inference with the stated in the call choice of tuning parameters of
 results = depmixS4pp::select_depmix(epochs =3,estat = 3,data = X,MIC = stats::AIC,SIC =stats::BIC,family = gaussian(),fparam = fparam,fobserved = fobserved,isobsbinary = c(0,0,rep(1,length(fparam))),prior.inclusion = array(1,c(length(fparam),2)),ranges = 1,ns = ns,initpr =  c(0,1,0),seeds = runif(M,1,1000),cores = M)
 ```
 
+Now we can make the predictions as:
 
+```R 
+y.pred = depmixS4pp::predict_depmix(X.test,object = results$results[[results$best.mic]]$model,mode = T)
+```
 
 
 **Additionally the research was presented via the following selected contributions:**
