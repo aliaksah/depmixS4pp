@@ -5,7 +5,7 @@ library(forecast)
 library(glmnet)
 library(HDeconometrics)
 library(RCurl)
-library(depmixS4)
+#library(depmixS4)
 #prepare the data
 sp500data = read.table(text = getURL("https://raw.githubusercontent.com/aliaksah/depmixS4pp/master/data/all_stocks_5yr.csv"),sep = ",",header = T)
 name1 = "AAPL"
@@ -45,7 +45,7 @@ fparam = colnames(X)[3:length(colnames(X))]
 fobserved = colnames(X)[2]
 ns = 3
 M=30
-results = select_depmix(epochs =3,estat = 3,data = X,MIC = stats::AIC,SIC =stats::BIC,family = gaussian(),fparam = fparam,fobserved = fobserved,isobsbinary = c(0,0,rep(1,length(fparam))),prior.inclusion = array(1,c(length(fparam),2)),ranges = 1,ns = ns,initpr =  c(0,1,0),seeds = runif(M,1,1000),cores = M)
+results = depmixS4pp::select_depmix(epochs =3,estat = 3,data = X,MIC = stats::AIC,SIC =stats::BIC,family = gaussian(),fparam = fparam,fobserved = fobserved,isobsbinary = c(0,0,rep(1,length(fparam))),prior.inclusion = array(1,c(length(fparam),2)),ranges = 1,ns = ns,initpr =  c(0,1,0),seeds = runif(M,1,1000),cores = M)
 
 
 #look at the best found model
@@ -62,8 +62,10 @@ prc = spp*exp(cumsum(X$AAPL))
 y.pred = depmixS4pp::predict_depmix(X.test,object = results$results[[results$best.mic]]$model,mode = T)
 
 
-plot(y.pred$y, col = 2)
-points(X.test$AAPL, col =3)
+
+plot(X.test$AAPL, col =3,xaxt = "n")
+points(y.pred$y, col = 2)
+axis(1, at=seq(1,length(X.test$AAPL), by = 50), labels=X.test$date[seq(1,length(X.test$date), by = 50)],las=2)
 
 #fit and predict for the competing models
 fit_autoarima = function(vect)
@@ -138,6 +140,11 @@ infer.cimpa$preds
 
 prc = sp*exp(cumsum(X.test$AAPL))
 prc.pred = sp*exp(cumsum(y.pred$y))
+
+plot(prc,col = "brown",type = "l",ylim = c(100,200),xaxt = "n")
+lines(prc.pred, col = "blue")
+axis(1, at=seq(1,length(X.test$AAPL), by = 50), labels=X.test$date[seq(1,length(X.test$date), by = 50)],las=2)
+
 prc.cimpa = sp*exp(cumsum(infer.cimpa$preds))
 prc.ar = sp*exp(cumsum(pred.ar))
 prc.lasso = sp*exp(cumsum(pred.lasso))
