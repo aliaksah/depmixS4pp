@@ -68,8 +68,26 @@ results = depmixS4pp::select_depmix(epochs =3,estat = 3,data = X,MIC = stats::AI
 Now we can make the predictions as:
 
 ```R 
-y.pred = depmixS4pp::predict_depmix(X.test,object = results$results[[results$best.mic]]$model,mode = T)
+y.pred = depmixS4pp::predict_depmix(X.test,object = results$results[[results$best.mic]]$model,mode = F)
 ```
+
+And plot the predictions for the log-returns (red) and actual test log-returns (green):
+
+
+```R 
+plot(X.test$AAPL, col =3)
+points(y.pred$y, col = 2)
+```
+
+Resulting in:
+
+Finally we can plot the price predictions. To do that we first trasform the actual and predicted log-returns via:
+
+```R 
+prc = sp*exp(cumsum(X.test$AAPL))
+prc.pred = sp*exp(cumsum(y.pred$y))
+```
+And plot the predictions for the price (blue) and actual test price (brown):
 
 
 **Additionally the research was presented via the following selected contributions:**
