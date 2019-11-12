@@ -79,7 +79,8 @@ plot(X.test$AAPL, col =3,xaxt = "n")
 points(y.pred$y, col = 2)
 axis(1, at=seq(1,length(X.test$AAPL), by = 50), labels=X.test$date[seq(1,length(X.test$date), by = 50)],las=2)
 ```
-![Log-returns](https://raw.githubusercontent.com/aliaksah/depmixS4pp/master/examples/results/logreturns.png){:height="50%" width="50%"}
+![Log-returns](https://raw.githubusercontent.com/aliaksah/depmixS4pp/master/examples/results/logreturns.png)
+<img src="https://raw.githubusercontent.com/aliaksah/depmixS4pp/master/examples/results/logreturns.png" width="100" height="100">
 
 Finally we can plot the price predictions. To do that we first trasform the actual and predicted log-returns via:
 
