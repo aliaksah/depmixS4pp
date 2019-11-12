@@ -29,6 +29,22 @@ y.pred = depmixS4pp::predict_depmix(X.test,object = results$results[[results$bes
 ```
 ***
 
+**Consider an example of Apple (AAPL) stock price predictions**
+
+The example is focused upon Aple stock (AAPL) prediction with respect to log-returns of p=29 stocks from the S&P500 listing with the highest correlations to AAPL. The addressed data  consists of 1258 observations of log returns for 30 stocks based on the daily close price. Th predictors are: "ADI", "AMAT", "AMP", "AOS", "APH", "AVGO", "BLK", "BRK.B", "CSCO", "FISV", "GLW", "GOOGL", "GOOG", "HON"   "INTC", "ITW", "IVZ", "LRCX", "MA", "MCHP", "MSFT", "QRVO", "ROK", "SPGI", "SWKS", "TEL", "TSS", "TXN", "TXT", where the underscripts are representing the official S&P500 acronyms of the corresponding stocks. In terms of physical time, the observations are ranged from 11.02.2013 to 07.02.2018. The focus of this example is in both inference and predictions, hence we divided the data into a training data set (before 01.01.2017) and a testing data set (after 01.01.2017). The full data processing script is available on [GitHub](https://github.com/aliaksah/depmixS4pp/tree/master/examples). With no loss of generality here let:
+
+```R 
+X #be the training data on 30 stocks
+X.test #be the test data on 30 stocks
+```
+
+The primary model selection criterion addressed in this example is AIC due to that we are mainly interested in predictions, whilst BIC is the secondary reported criterion.
+
+Then 
+
+```R 
+
+```
 
 **Additionally the research was presented via the following selected contributions:**
 
