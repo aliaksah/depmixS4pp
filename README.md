@@ -1,3 +1,4 @@
+*An Adaptive Simulated Annealing EM Algorithm for Inference on Non-homogeneous Hidden Markov Models*
 
 <p align="justify">
 In this package we are adding adaptive simulated variable selection, and various prediction options for the standard depmixS4 for inference on-homogeneous hidden Markov models (NHHMM)
