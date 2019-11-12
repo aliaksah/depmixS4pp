@@ -101,6 +101,7 @@ This reults in:
 Here, we have the RMSE of **10.816** obtained via:
 
 ```R 
+mse.hmm.pr = sqrt(mean((prc.pred-prc)^2))
 ```
 
 Benchmarks against other methods can be found [here](https://github.com/aliaksah/depmixS4pp/blob/master/examples/AAPL_example.R).  
