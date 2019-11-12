@@ -1,20 +1,17 @@
-citHeader("To cite depmixS4 in publications use:")
+citHeader("To cite depmixS4pp in publications use:")
 
 citEntry(entry = "Article",
-  title        = "{depmixS4}: An {R} Package for Hidden Markov Models",
-  author       = personList(as.person("Ingmar Visser"),
-                   as.person("Maarten Speekenbrink")),
-  journal      = "Journal of Statistical Software",
-  year         = "2010",
-  volume       = "36",
-  number       = "7",
-  pages        = "1--21",
-  url          = "http://www.jstatsoft.org/v36/i07/",
+  title        = "An Adaptive Simulated Annealing EM Algorithm for Inference on Non-homogeneous Hidden Markov Models",
+  author       = personList(as.person("Aliaksandr Hubin"))      
+  journal      = "International Conference on Artificial Intelligence, Information Processing and Cloud Computing 2019"
+  year         = "2019",
+  pages        = "1--9",
+  url          = "http://www.aiipcc.org/",
 
   textVersion  =
-  paste("Ingmar Visser, Maarten Speekenbrink (2010).",
-        "depmixS4: An R Package for Hidden Markov Models.",
-        "Journal of Statistical Software, 36(7), 1-21.",
-        "URL http://www.jstatsoft.org/v36/i07/.")
+  paste("Aliaksandr Hubin (2019).",
+        "An Adaptive Simulated Annealing EM Algorithm for Inference on Non-homogeneous Hidden Markov Models",
+        "AIPCC2019",
+        "URL http://www.aiipcc.org/")
 )
 
