@@ -96,8 +96,9 @@ plot(prc,col = "brown",type = "l",ylim = c(100,200),xaxt = "n")
 lines(prc.pred, col = "blue")
 axis(1, at=seq(1,length(X.test$AAPL), by = 50), labels=X.test$date[seq(1,length(X.test$date), by = 50)],las=2)
 ```
-![Price](https://raw.githubusercontent.com/aliaksah/depmixS4pp/master/examples/results/prices.png){:height="50%" width="50%"}
-
+<p align="center">
+<img src="https://raw.githubusercontent.com/aliaksah/depmixS4pp/master/examples/results/prices.png" width="700" height="400">
+</p>
 Here, we have the RMSE of **10.816** obtained via:
 
 ```R 
