@@ -79,8 +79,7 @@ plot(X.test$AAPL, col =3,xaxt = "n")
 points(y.pred$y, col = 2)
 axis(1, at=seq(1,length(X.test$AAPL), by = 50), labels=X.test$date[seq(1,length(X.test$date), by = 50)],las=2)
 ```
-
-Resulting in:
+![Log-returns](https://raw.githubusercontent.com/aliaksah/depmixS4pp/master/examples/results/logreturns.png)
 
 Finally we can plot the price predictions. To do that we first trasform the actual and predicted log-returns via:
 
@@ -88,6 +87,7 @@ Finally we can plot the price predictions. To do that we first trasform the actu
 prc = sp*exp(cumsum(X.test$AAPL))
 prc.pred = sp*exp(cumsum(y.pred$y))
 ```
+
 And plot the predictions for the price (blue) and actual test price (brown) via:
 
 ```R 
@@ -95,8 +95,7 @@ plot(prc,col = "brown",type = "l",ylim = c(100,200),xaxt = "n")
 lines(prc.pred, col = "blue")
 axis(1, at=seq(1,length(X.test$AAPL), by = 50), labels=X.test$date[seq(1,length(X.test$date), by = 50)],las=2)
 ```
-
-This reults in:
+![Price](https://raw.githubusercontent.com/aliaksah/depmixS4pp/master/examples/results/prices.png)
 
 Here, we have the RMSE of **10.816** obtained via:
 
