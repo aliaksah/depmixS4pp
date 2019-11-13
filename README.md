@@ -57,7 +57,7 @@ We will run the ASA-EM with gaussian observations with 3 latent states on 30 cor
 
 ```R 
 ns = 3
-M=30
+M = 30
 ```
 And run the inference with the stated in the call choice of tuning parameters of the algorithm:
 
