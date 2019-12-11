@@ -9,7 +9,7 @@ NHHMM are a subclass of dependent mixture models used for semi-supervised learni
 
 ***
 
-* Full text of the paper introducing An Adaptive Simulated Annealing EM Algorithm for Inference on Non-homogeneous Hidden Markov Models: [ACM](https://dl.acm.org/icps.cfm)
+* Full text of the paper introducing An Adaptive Simulated Annealing EM Algorithm for Inference on Non-homogeneous Hidden Markov Models: [ACM](https://dl.acm.org/citation.cfm?doid=3371425.3371641&preflayout=flat)
 * Some applications of the package are available on: [GitHub](https://github.com/aliaksah/depmixS4pp/tree/master/examples)  
 
 
@@ -113,6 +113,30 @@ Benchmarks against other methods can be found [here](https://github.com/aliaksah
 *Scientific lectures*
 
 1. Hubin, Aliaksandr; Storvik, Geir Olve. On model selection in Hidden Markov Models with covariates. Workshop, Klækken Workshop 2015; Klækken, 29.05.2015.
+
+***
+**Citation:**
+
+inproceedings{Hubin:2019:ASA:3371425.3371641,
+ author = {Hubin, Aliaksandr},
+ title = {An Adaptive Simulated Annealing EM Algorithm for Inference on Non-homogeneous Hidden Markov Models},
+ booktitle = {Proceedings of the International Conference on Artificial Intelligence, Information Processing and Cloud Computing},
+ series = {AIIPCC '19},
+ year = {2019},
+ isbn = {978-1-4503-7633-4},
+ location = {Sanya, China},
+ pages = {63:1--63:9},
+ articleno = {63},
+ numpages = {9},
+ url = {http://doi.acm.org/10.1145/3371425.3371641},
+ doi = {10.1145/3371425.3371641},
+ acmid = {3371641},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+ keywords = {adaptive parameter tuning, expectation maximization, hidden Markov models, model selection, simulated annealing},
+} 
+
+
 
 ***
 
