@@ -115,7 +115,7 @@ Benchmarks against other methods can be found [here](https://github.com/aliaksah
 1. Hubin, Aliaksandr; Storvik, Geir Olve. On model selection in Hidden Markov Models with covariates. Workshop, Klækken Workshop 2015; Klækken, 29.05.2015.
 
 ***
-**Citation:**
+**Bibtex Citation Format:**
 
 ```tex
 inproceedings{Hubin:2019:ASA:3371425.3371641,
