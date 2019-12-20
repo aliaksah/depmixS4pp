@@ -114,7 +114,7 @@ Benchmarks against other methods can be found [here](https://github.com/aliaksah
 
 1. Hubin, Aliaksandr; Storvik, Geir Olve. On model selection in hidden Markov models with covariates. Workshop, Klækken Workshop 2015; Klækken, 29.05.2015.
 
-2. Hubin, Aliaksandr; An adaptive simulated annealing EM algorithm for inference on non-homogeneous hidden Markov models. International Conference on Artificial Intelligence (AIIPCC 2019), Information Processing and Cloud Computing; Sanya 20.12.2019.
+2. Hubin, Aliaksandr; An adaptive simulated annealing EM algorithm for inference on non-homogeneous hidden Markov models. International Conference on Artificial Intelligence (AIIPCC 2019), Information Processing and Cloud Computing; Sanya, 20.12.2019.
 
 ***
 **Bibtex Citation Format:**
