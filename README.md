@@ -9,7 +9,7 @@ NHHMM are a subclass of dependent mixture models used for semi-supervised learni
 
 ***
 
-* Full text of the paper introducing An Adaptive Simulated Annealing EM Algorithm for Inference on Non-homogeneous Hidden Markov Models: [ACM](https://dl.acm.org/citation.cfm?doid=3371425.3371641&preflayout=flat)
+* Full text of the paper introducing An Adaptive Simulated Annealing EM Algorithm for Inference on Non-homogeneous Hidden Markov Models: [ACM](https://dl.acm.org/citation.cfm?doid=3371425.3371641&preflayout=flat) and [arXiv](https://arxiv.org/pdf/1912.09733.pdf)
 * Some applications of the package are available on: [GitHub](https://github.com/aliaksah/depmixS4pp/tree/master/examples)  
 
 
